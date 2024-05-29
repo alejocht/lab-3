@@ -70,6 +70,27 @@
 --     C.Nombre,
 --     N.Nombre
 -- ORDER BY C.Nombre ASC
+---- Punto 17
+--SELECT 
+--C.Nombre,
+--COUNT(Cont.ID) AS CantidadContenidos
+--FROM Cursos C
+--INNER JOIN Clases ON Clases.IDCurso = C.ID
+--INNER JOIN Contenidos Cont ON Clases.ID = Cont.IDClase
+--GROUP BY C.Nombre
+--HAVING COUNT(Cont.ID) > 10
+---- Punto 18
+--SELECT
+--Cursos.Nombre,
+--Idiomas.Nombre,
+--COUNT(Idiomas_x_Curso.IDFormatoIdioma) AS CantidadFormatos
+--FROM Cursos
+--INNER JOIN Idiomas_x_Curso ON Idiomas_x_Curso.IDCurso = Cursos.ID
+--INNER JOIN FormatosIdioma ON FormatosIdioma.ID = Idiomas_x_Curso.IDFormatoIdioma
+--INNER JOIN Idiomas ON Idiomas.ID = Idiomas_x_Curso.IDIdioma
+--GROUP BY Cursos.Nombre, Idiomas.Nombre
+
+
 
 
 
