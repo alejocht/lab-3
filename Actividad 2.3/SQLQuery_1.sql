@@ -1,0 +1,77 @@
+--Funciones de resumen
+-- USE UnivSemana5_1
+-- go
+-- -- Punto 1
+-- Select COUNT(*) FROM Cursos
+-- -- Punto 2
+-- SELECT COUNT(*) FROM Usuarios
+-- -- Punto 3
+-- SELECT AVG(c.Costo) FROM Certificaciones c
+-- -- Punto 4
+-- SELECT AVG(r.Puntaje) FROM Reseñas r
+-- -- Punto 5
+-- SELECT MIN(Estreno) FROM Cursos
+-- -- Punto 6
+-- SELECT MIN(c.Costo) FROM Certificaciones c
+-- -- Punto 7
+-- SELECT SUM(c.Costo) FROM Certificaciones c
+-- -- Punto 8
+-- SELECT SUM(Pagos.Importe) FROM Pagos
+-- Punto 9
+-- SELECT COUNT(*) FROM Cursos WHERE Cursos.IDNivel = 5 
+-- -- Punto 10
+-- SELECT SUM(Pagos.Importe) FROM Pagos WHERE YEAR(Pagos.Fecha) = 2020
+-- -- Punto 11
+-- SELECT COUNT(*) FROM Usuarios
+-- INNER JOIN Instructores_x_Curso ON Instructores_x_Curso.IDUsuario = Usuarios.ID
+-- -- Punto 12
+-- SELECT DISTINCT COUNT(*) FROM Certificaciones
+-- -- Punto 13
+-- SELECT Paises.Nombre Pais , COUNT(Usuarios.ID) FROM Usuarios
+-- INNER JOIN Datos_Personales ON Usuarios.ID = Datos_Personales.ID
+-- INNER JOIN Localidades ON Datos_Personales.IDLocalidad = Localidades.ID
+-- INNER JOIN Paises ON Localidades.IDPais = Paises.ID
+-- GROUP BY Paises.Nombre
+-- -- Punto 14
+-- SELECT
+-- D.Apellidos AS apellidos,
+-- D.Nombres AS nombres,
+-- MAX(P.Importe) AS MaximoImporte
+-- FROM Datos_Personales D
+-- INNER JOIN Usuarios ON D.ID = Usuarios.ID
+-- INNER JOIN Inscripciones ON Usuarios.ID = Inscripciones.IDUsuario
+-- INNER JOIN Pagos P ON Inscripciones.ID = P.IDInscripcion
+-- GROUP BY 
+-- D.Apellidos,
+-- D.Nombres
+-- HAVING MAX(P.Importe) > 7500
+-- -- Punto 15
+-- SELECT 
+-- D.Apellidos,
+-- D.Nombres,
+-- MAX(I.Costo) AS CostoMaximo
+-- FROM Datos_Personales D
+-- INNER JOIN Usuarios ON Usuarios.ID = D.ID
+-- LEFT JOIN Inscripciones I ON I.IDUsuario = Usuarios.ID
+-- GROUP BY
+--     D.Apellidos,
+--     D.Nombres
+-- ORDER BY D.Apellidos ASC
+-- -- Punto 16
+-- SELECT
+-- C.Nombre,
+-- N.Nombre AS Nivel,
+-- COUNT(Clases.ID) AS Clases,
+-- SUM(Clases.Duracion) AS DuracionTotal
+-- FROM Cursos C
+-- LEFT JOIN Niveles N ON N.ID = C.IDNivel
+-- INNER JOIN Clases ON C.ID = Clases.IDCurso
+-- GROUP BY 
+--     C.Nombre,
+--     N.Nombre
+-- ORDER BY C.Nombre ASC
+
+
+
+
+

@@ -1,0 +1,42 @@
+-- USE Univ
+-- GO
+-- Punto 1
+-- SELECT * FROM Idiomas
+-- Punto 2
+-- SELECT * FROM Cursos
+-- Punto 3
+-- SELECT Nombre, CostoCurso, CostoCertificacion, FechaEstreno FROM Cursos
+-- Punto 4
+-- SELECT ID, Nombre, CostoCurso, IDNivel FROM Cursos WHERE CostoCertificacion<5000
+-- Punto 5
+-- SELECT ID, Nombre, CostoCurso, IDNivel FROM Cursos WHERE CostoCertificacion>1200
+-- Punto 6
+-- SELECT Nombre, Numero, Duracion FROM Clases WHERE ID=6
+-- Punto 7
+--  SELECT Nombre, Numero, Duracion FROM Clases WHERE ID=10
+-- Punto 8
+-- SELECT Nombre, Duracion FROM Clases WHERE IDCurso=4 ORDER BY Duracion DESC
+-- Punto 9
+-- SELECT Nombre,FechaEstreno, CostoCurso, CostoCertificacion FROM Cursos ORDER BY FechaEstreno ASC
+-- Punto 10
+-- SELECT Nombre,FechaEstreno, CostoCurso FROM Cursos WHERE IDNivel IN(1,5,9,10)
+--Punto 11
+-- SELECT TOP 3 Nombre, FechaEstreno, CostoCurso FROM Cursos ORDER BY CostoCertificacion DESC
+-- Punto 12
+-- SELECT Nombre, Duracion, Numero FROM Clases WHERE IDCurso IN(2,5,7) ORDER BY IDCurso ASC, Numero ASC
+-- Punto 13
+-- SELECT Nombre, FechaEstreno FROM Cursos WHERE YEAR(FechaEstreno)=2019 AND MONTH(FechaEstreno) BETWEEN 1 AND 6
+-- Punto 14
+-- SELECT * FROM Cursos WHERE YEAR(FechaEstreno)=2020
+-- Punto 15
+-- SELECT * FROM Cursos WHERE MONTH(FechaEstreno) BETWEEN 1 AND 4
+-- Punto 16
+-- SELECT * FROM Clases WHERE Duracion BETWEEN 15 AND 90
+-- Punto 17
+-- SELECT * FROM Contenidos WHERE (Tamaño > 5000 AND IDTipoContenido=4) OR (Tamaño < 400 AND IDTipoContenido=1)
+-- Punto 18
+-- SELECT * FROM Cursos WHERE IDNivel IS NULL
+-- Punto 19
+-- SELECT * FROM Cursos WHERE CostoCertificacion >= CostoCurso*0.2
+-- Punto 20
+-- SELECT DISTINCT CostoCurso FROM Cursos ORDER BY CostoCurso DESC 

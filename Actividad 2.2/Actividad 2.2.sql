@@ -1,0 +1,202 @@
+USE UnivSemana5
+-- --Punto 1
+-- SELECT Usuarios.NombreUsuario as usuario, Datos_Personales.Nombres, Datos_Personales.Apellidos from Usuarios
+-- inner JOIN Datos_Personales on Usuarios.ID = Datos_Personales.ID
+-- --Punto 2
+-- Select D.Nombres, D.Apellidos, P.Nombre as Pais FROM Datos_Personales D 
+-- INNER JOIN Localidades L ON D.IDLocalidad = L.ID
+-- INNER JOIN Paises P ON L.IDPais = P.ID
+-- --Punto 3
+-- SELECT 
+-- U.NombreUsuario,
+-- D.Apellidos,
+-- D.Nombres,
+-- CASE
+--     WHEN D.Email IS NULL 
+--     THEN D.Celular
+--     ELSE D.Email
+-- END
+-- AS Contacto
+-- -- COALESCE(D.Email, D.Celular) AS Contacto
+-- from Usuarios U
+-- INNER JOIN Datos_personales D ON U.ID = D.ID
+-- WHERE LEFT(D.Domicilio,1) IN ('A','E','I','O','U')
+-- --Punto 4
+-- SELECT 
+-- U.NombreUsuario,
+-- D.Apellidos,
+-- D.Nombres,
+-- CASE 
+--     WHEN D.Email IS NOT NULL THEN D.Email
+--     WHEN D.Celular IS NOT NULL THEN D.Celular
+--     ELSE D.Domicilio
+-- END
+-- AS Contacto
+-- from Usuarios U
+-- INNER JOIN Datos_personales D ON U.ID = D.ID
+-- --Punto 5
+-- SELECT
+-- D.Apellidos Apellido,
+-- D.Nombres Nombre,
+-- C.Nombre Curso,
+-- I.Costo Costo
+-- from Cursos C
+-- INNER JOIN Inscripciones I on C.ID = I.IDCurso
+-- INNER JOIN Usuarios U on U.ID = I.IDUsuario
+-- INNER JOIN Datos_Personales D ON D.ID = U.ID
+-- WHERE I.Costo != 0
+-- --Punto 6
+-- SELECT
+-- C.Nombre Curso,
+-- U.NombreUsuario Username,
+-- D.Email Mail
+-- from Cursos C
+-- INNER JOIN Inscripciones I ON C.ID = I.IDCurso
+-- INNER JOIN Usuarios U ON U.ID = I.IDUsuario
+-- INNER JOIN Datos_Personales D ON D.ID = U.ID
+-- where YEAR(C.Estreno) = 2020
+-- --Punto 7
+-- SELECT
+-- C.Nombre Curso,
+-- U.NombreUsuario Username,
+-- D.Apellidos Apellido,
+-- D.Nombres Nombre,
+-- I.Fecha FechaInscripcion,
+-- I.Costo CostoInscripcion,
+-- P.Fecha FechaPago,
+-- P.Importe Importe
+-- FROM Pagos P
+-- INNER JOIN Inscripciones I on P.IDInscripcion = I.ID
+-- INNER JOIN Cursos C on C.ID = I.IDCurso
+-- INNER JOIN Usuarios U on U.ID = I.IDUsuario
+-- INNER JOIN Datos_Personales D on D.ID = U.ID
+-- --Punto 8
+-- SELECT
+-- D.Nombres Nombres,
+-- D.Apellidos Apellidos,
+-- D.Genero Genero,
+-- D.Nacimiento Nacimiento,
+-- C.Fecha FechaCertificado
+-- FROM Certificaciones C
+-- INNER JOIN Inscripciones I ON C.IDInscripcion = I.ID
+-- INNER JOIN Usuarios U ON I.IDUsuario = U.ID
+-- INNER JOIN Datos_Personales D ON D.ID = U.ID
+-- --Punto 9
+-- SELECT
+-- C.Nombre Nombre,
+-- C.CostoCurso CostoCurso,
+-- C.CostoCertificacion CostoCertificacion,
+-- (C.CostoCurso + C.CostoCertificacion) CostoTotal
+-- FROM Cursos C
+-- INNER JOIN Niveles N ON C.IDNivel = N.ID 
+-- -- NO SE A QUE SE REFIERE CON 10%
+-- --Punto 10
+-- SELECT DISTINCT
+-- D.Nombres,
+-- D.Apellidos,
+-- D.Email
+-- FROM Instructores_x_Curso IC
+-- INNER JOIN Usuarios U ON U.ID = IC.IDUsuario
+-- INNER JOIN Datos_Personales D ON U.ID = D.ID
+-- --Punto 11
+-- SELECT
+-- D.Nombres,
+-- D.Apellidos
+-- FROM Datos_Personales D
+-- INNER JOIN Usuarios U ON D.ID = U.ID
+-- INNER JOIN Inscripciones I ON I.IDUsuario = U.ID
+-- INNER JOIN Cursos C ON I.IDCurso = C.ID
+-- INNER JOIN Categorias_x_Curso CC ON CC.IDCurso = C.ID
+-- INNER JOIN Categorias CAT ON CC.IDCategoria = CAT.ID
+-- WHERE CAT.Nombre LIKE 'Historia' 
+-- --Punto 12
+-- SELECT
+-- I.Nombre,
+-- IC.IDCurso Curso,
+-- FI.ID Formato
+-- FROM Idiomas I
+-- LEFT JOIN Idiomas_x_Curso IC ON I.ID = IC.IDIdioma
+-- INNER JOIN FormatosIdioma FI ON IC.IDFormatoIdioma = FI.ID
+-- --Punto 13
+-- SELECT
+-- I.Nombre,
+-- IC.*
+-- FROM Idiomas I
+-- LEFT JOIN Idiomas_x_Curso IC ON IC.IDIdioma = I.ID
+-- WHERE IC.IDCurso IS NULL
+-- -- Punto 14
+-- SELECT DISTINCT I.Nombre FROM Idiomas I
+-- INNER JOIN Idiomas_x_Curso IC ON I.ID = IC.IDIdioma
+-- WHERE IC.IDFormatoIdioma = 2 
+-- -- Punto 15
+-- SELECT
+-- P.Nombre AS Pais,
+-- D.Nombres,
+-- D.Apellidos
+-- FROM Datos_Personales D
+-- INNER JOIN Localidades L ON L.ID = D.IDLocalidad
+-- RIGHT JOIN Paises P ON P.ID = L.IDPais
+-- -- Punto 16
+-- SELECT
+-- C.Nombre AS Curso,
+-- C.Estreno,
+-- U.NombreUsuario
+-- FROM Cursos C
+-- INNER JOIN Inscripciones I ON I.IDCurso = C.ID
+-- RIGHT JOIN Usuarios U ON U.ID = I.IDUsuario 
+-- -- Punto 17
+-- SELECT
+-- U.NombreUsuario AS USUARIO,
+-- D.Apellidos,
+-- D.Nombres,
+-- D.Email
+-- FROM Datos_Personales D
+-- INNER JOIN Usuarios U ON U.ID = D.ID
+-- LEFT JOIN Inscripciones I ON I.IDUsuario = U.ID
+-- WHERE I.ID IS NULL
+-- -- Punto 18
+-- SELECT
+-- D.Nombres,
+-- D.Apellidos,
+-- C.Nombre AS Curso,
+-- R.Puntaje,
+-- R.Observaciones
+-- FROM Datos_Personales D
+-- INNER JOIN Usuarios U ON D.ID = U.ID
+-- INNER JOIN Inscripciones I ON I.IDUsuario = U.ID
+-- INNER JOIN Cursos C ON C.ID = I.IDCurso
+-- INNER JOIN Reseñas R ON R.IDInscripcion = I.ID
+-- WHERE R.Inapropiada = 1
+-- -- Punto 19
+-- SELECT
+-- C.Nombre,
+-- C.CostoCurso,
+-- C.CostoCertificacion,
+-- FI.Nombre AS Formato,
+-- I.Nombre,
+-- C.Estreno
+-- FROM Cursos C
+-- INNER JOIN Idiomas_x_Curso IC ON IC.IDCurso = C.ID
+-- INNER JOIN Idiomas I ON IC.IDIdioma = I.ID
+-- INNER JOIN FormatosIdioma FI ON FI.ID = IC.IDFormatoIdioma
+-- WHERE YEAR(C.Estreno) < YEAR(GETDATE())
+-- ORDER BY C.Nombre ASC, FI.Nombre ASC
+-- -- Punto 20
+-- SELECT
+-- C.Nombre,
+-- P.Importe
+-- FROM Cursos C
+-- INNER JOIN Inscripciones I ON I.IDCurso = C.ID
+-- INNER JOIN Pagos P ON P.IDInscripcion = I.ID
+-- Punto 21
+SELECT
+C.Nombre,
+C.CostoCurso,
+CASE
+    WHEN C.CostoCurso > 15000 THEN 'Costoso'
+    WHEN C.CostoCurso BETWEEN 2500 AND 15000 THEN 'Accesible'
+    WHEN C.CostoCurso BETWEEN 1 AND 2499 THEN 'Barato'
+    WHEN C.CostoCurso = 0 THEN 'Gratis'
+END AS Etiqueta_costo
+FROM Cursos C
+
