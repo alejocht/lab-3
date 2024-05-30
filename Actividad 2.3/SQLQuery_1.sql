@@ -89,10 +89,37 @@
 --INNER JOIN FormatosIdioma ON FormatosIdioma.ID = Idiomas_x_Curso.IDFormatoIdioma
 --INNER JOIN Idiomas ON Idiomas.ID = Idiomas_x_Curso.IDIdioma
 --GROUP BY Cursos.Nombre, Idiomas.Nombre
-
-
-
-
-
+---- Punto 19
+--SELECT
+--Cursos.Nombre,
+--COUNT(Distinct Idiomas_x_Curso.IDIdioma) as CantidadIdiomas
+--FROM Cursos
+--LEFT JOIN Idiomas_x_Curso ON Idiomas_x_Curso.IDCurso = Cursos.ID
+--GROUP BY Cursos.Nombre
+--ORDER BY Cursos.Nombre ASC
+---- Punto 20
+--SELECT
+--Categorias.Nombre,
+--COUNT(DISTINCT Categorias_x_Curso.IDCurso) As CursosAsociados
+--FROM Categorias
+--INNER JOIN Categorias_x_Curso ON Categorias.ID = Categorias_x_Curso.IDCategoria
+--GROUP BY Categorias.Nombre
+---- Punto 21
+--SELECT
+--TiposContenido.Nombre,
+--COUNT(Contenidos.ID) AS CantidadContenidos
+--FROM TiposContenido
+--LEFT JOIN Contenidos ON TiposContenido.ID = Contenidos.IDTipo
+--GROUP BY TiposContenido.Nombre
+-- Punto 22
+SELECT
+Cursos.Nombre AS Nombre,
+Niveles.Nombre AS Nivel,
+Cursos.Estreno AS FechaEstreno,
+SUM(Inscripciones.Costo) As TotalAcumulado
+FROM Cursos
+LEFT JOIN Niveles ON Cursos.IDNivel = Niveles.ID 
+INNER JOIN Inscripciones ON Cursos.ID = Inscripciones.IDCurso
+group by Cursos.Nombre, Niveles.Nombre, Cursos.Estreno
 
 
