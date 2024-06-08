@@ -46,3 +46,45 @@ LEFT join Pagos P on P.IDInscripcion = I.ID
 group by DP.Nombres, DP.Apellidos
 having COUNT(p.id) = 0
 
+--Listado de países que no tengan usuarios relacionados.
+
+SELECT DISTINCT P.Nombre FROM Paises P
+LEFT JOIN Localidades L ON L.IDPais = P.ID
+LEFT JOIN Datos_Personales DP ON DP.IDLocalidad = L.ID
+WHERE P.ID NOT IN 
+(
+	SELECT DISTINCT Paises.ID FROM Paises
+	INNER JOIN Localidades ON Localidades.IDPais = Paises.ID
+	INNER JOIN Datos_Personales ON Datos_Personales.IDLocalidad = Localidades.ID
+)
+
+--Listado de clases cuya duración sea mayor a la duración promedio.
+
+SELECT * FROM CLASES
+WHERE Clases.Duracion > (SELECT AVG(Clases.Duracion) FROM Clases)
+
+--Listado de contenidos cuyo tamaño sea mayor al tamaño de todos los contenidos de tipo 'Audio de alta calidad'.
+
+SELECT C.ID FROM Contenidos C
+INNER JOIN TiposContenido TC ON TC.ID = C.IDTipo
+INNER JOIN Clases CL ON CL.ID = C.IDClase
+WHERE C.Tamaño > ( SELECT MAX(C.Tamaño) FROM Contenidos C
+					INNER JOIN TiposContenido TC ON TC.ID = C.IDTipo
+					INNER JOIN Clases CL ON CL.ID = C.IDClase
+					WHERE TC.Nombre LIKE 'Audio de alta calidad')
+
+SELECT * FROM TiposContenido INNER JOIN Contenidos ON Contenidos.IDTipo = TiposContenido.ID INNER JOIN Clases ON Clases.ID = Contenidos.IDClase
+
+--Listado de contenidos cuyo tamaño sea menor al tamaño de algún contenido de tipo 'Audio de alta calidad'.
+
+SELECT C.ID FROM Contenidos C
+INNER JOIN TiposContenido TC ON TC.ID = C.IDTipo
+INNER JOIN Clases CL ON CL.ID = C.IDClase
+WHERE C.Tamaño > (SELECT MIN(C.Tamaño) FROM Contenidos C
+					INNER JOIN TiposContenido TC ON TC.ID = C.IDTipo
+					INNER JOIN Clases CL ON CL.ID = C.IDClase
+					WHERE TC.Nombre LIKE 'Audio de alta calidad')
+
+--Listado con nombre de país y la cantidad de usuarios de género masculino y la cantidad de usuarios de género femenino que haya registrado.
+
+
