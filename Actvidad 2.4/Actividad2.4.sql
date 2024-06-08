@@ -99,3 +99,63 @@ WHERE Datos_Personales.Genero LIKE 'F' AND Paises.ID = P.ID) as Femeninos
 FROM Paises P
 LEFT JOIN Localidades L ON L.IDPais = P.ID
 LEFT JOIN Datos_Personales DP ON DP.IDLocalidad = L.ID
+
+--Listado con apellidos y nombres de los usuarios y la cantidad de inscripciones realizadas en el 2019 y la cantidad de inscripciones realizadas en el 2020.
+
+SELECT DISTINCT
+DP.Nombres,
+DP.Apellidos,
+(SELECT COUNT(Inscripciones.ID) FROM Inscripciones
+LEFT JOIN Usuarios ON Inscripciones.IDUsuario = Usuarios.ID
+WHERE YEAR(Inscripciones.Fecha) = 2019 AND Usuarios.ID = U.ID)
+as InscripcionesEn2019,
+(SELECT COUNT(Inscripciones.ID) FROM Inscripciones
+LEFT JOIN Usuarios ON Inscripciones.IDUsuario = Usuarios.ID
+WHERE YEAR(Inscripciones.Fecha) = 2020 AND Usuarios.ID = U.ID)
+as InscripcionesEn2020
+FROM Datos_Personales DP
+INNER JOIN Usuarios U ON DP.ID = U.ID
+LEFT JOIN Inscripciones I ON I.IDUsuario = U.ID
+
+--Listado con nombres de los cursos y la cantidad de idiomas de cada tipo. Es decir, la cantidad de idiomas de audio, la cantidad de subtítulos y la cantidad de texto de video.
+
+SELECT DISTINCT
+C.Nombre,
+(SELECT COUNT(Idiomas_x_Curso.IDCurso) FROM Cursos
+LEFT JOIN Idiomas_x_Curso ON Idiomas_x_Curso.IDCurso = Cursos.ID
+INNER JOIN FormatosIdioma ON Idiomas_x_Curso.IDFormatoIdioma = FormatosIdioma.ID
+INNER JOIN Idiomas ON Idiomas_x_Curso.IDIdioma = Idiomas.ID
+WHERE FormatosIdioma.Nombre LIKE 'Audio' AND CURSOS.ID = C.ID
+) as IdiomasAudio,
+(SELECT COUNT(Idiomas_x_Curso.IDCurso) FROM Cursos
+LEFT JOIN Idiomas_x_Curso ON Idiomas_x_Curso.IDCurso = Cursos.ID
+INNER JOIN FormatosIdioma ON Idiomas_x_Curso.IDFormatoIdioma = FormatosIdioma.ID
+INNER JOIN Idiomas ON Idiomas_x_Curso.IDIdioma = Idiomas.ID
+WHERE FormatosIdioma.Nombre LIKE 'Subtitulo' AND CURSOS.ID = C.ID
+) 
+as IdiomasSubtitulo,
+(SELECT COUNT(Idiomas_x_Curso.IDCurso) FROM Cursos
+LEFT JOIN Idiomas_x_Curso ON Idiomas_x_Curso.IDCurso = Cursos.ID
+INNER JOIN FormatosIdioma ON Idiomas_x_Curso.IDFormatoIdioma = FormatosIdioma.ID
+INNER JOIN Idiomas ON Idiomas_x_Curso.IDIdioma = Idiomas.ID
+WHERE FormatosIdioma.Nombre LIKE 'Texto del video' AND CURSOS.ID = C.ID
+) 
+as IdiomaTexto
+FROM Cursos C
+LEFT JOIN Idiomas_x_Curso IC ON IC.IDCurso = C.ID
+INNER JOIN FormatosIdioma FI ON IC.IDFormatoIdioma = FI.ID
+INNER JOIN Idiomas I ON IC.IDIdioma = I.ID
+
+--Listado con apellidos y nombres de los usuarios, nombre de usuario y cantidad de cursos de nivel 'Principiante' que realizó y cantidad de cursos de nivel 'Avanzado' que realizó.
+
+SELECT DISTINCT 
+DP.Apellidos,
+DP.Nombres,
+U.NombreUsuario,
+() AS CursosPrincipiantes,
+() AS CursosAvanzados
+FROM Datos_Personales DP
+INNER JOIN Usuarios U ON DP.ID = U.ID
+LEFT JOIN Inscripciones I ON I.IDUsuario = U.ID
+LEFT JOIN Cursos C ON I.IDCurso = C.ID
+INNER JOIN Niveles N ON N.ID = C.IDNivel
