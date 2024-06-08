@@ -87,4 +87,15 @@ WHERE C.Tamaño > (SELECT MIN(C.Tamaño) FROM Contenidos C
 
 --Listado con nombre de país y la cantidad de usuarios de género masculino y la cantidad de usuarios de género femenino que haya registrado.
 
-
+SELECT DISTINCT P.ID, P.Nombre, 
+(SELECT COUNT(*) FROM Paises
+LEFT JOIN Localidades ON Localidades.IDPais = Paises.ID
+LEFT JOIN Datos_Personales ON Datos_Personales.IDLocalidad = Localidades.ID
+WHERE Datos_Personales.Genero LIKE 'M' AND Paises.ID = P.ID) as Masculinos,
+(SELECT COUNT(*) FROM Paises
+LEFT JOIN Localidades ON Localidades.IDPais = Paises.ID
+LEFT JOIN Datos_Personales ON Datos_Personales.IDLocalidad = Localidades.ID
+WHERE Datos_Personales.Genero LIKE 'F' AND Paises.ID = P.ID) as Femeninos
+FROM Paises P
+LEFT JOIN Localidades L ON L.IDPais = P.ID
+LEFT JOIN Datos_Personales DP ON DP.IDLocalidad = L.ID
