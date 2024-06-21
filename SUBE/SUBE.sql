@@ -343,5 +343,143 @@ select * from Movimientos
 select * from Tarjetas
 select * from Usuarios
 
+--1) Realizar un trigger que al agregar un viaje:
+--- 1. Verifique que la tarjeta se encuentre activa. (ok)
+--- 2. Verifique que el saldo de la tarjeta sea suficiente para realizar el viaje.
+--- 3. Registre el viaje (ok)
+--- 4. Registre el movimiento
+--- 5. Descuente el saldo de la tarjeta
+
+create or alter trigger tr_Insert_Viaje on Viajes
+after insert
+as
+begin
+	begin try
+		begin transaction
+			declare @IDTarjeta bigint
+			select @IDTarjeta = IDTarjeta from inserted
+
+			declare @Estado bit
+			select @Estado = Estado from Tarjetas where ID = @IDTarjeta
+
+			if(@Estado = 0)
+			begin
+				raiserror('ERROR: La Tarjeta se encuentra inactiva',16,0)
+				return
+			end
+
+			declare @Saldo money
+			select @Saldo = Saldo from Tarjetas where ID = @IDTarjeta
+
+			declare @ImporteViaje money
+			select @ImporteViaje = Importe from inserted
+
+			if(@Saldo - @ImporteViaje < 0)
+			begin
+				raiserror('ERROR: El saldo de la tarjeta es insuficiente',16,0)
+				return
+			end
+
+			declare @FechaHora datetime
+			select @FechaHora = FechaHora from inserted
+
+			insert into Movimientos (FechaHora, IDTarjeta, Importe, Tipo) values (@FechaHora, @IDTarjeta, @ImporteViaje,'D')
+			update Tarjetas set Saldo = Saldo - @ImporteViaje where ID = @IDTarjeta
+
+		commit transaction
+	end try
+	begin catch
+		print error_message()
+		rollback transaction
+	end catch
+end
+
+select * from Tarjetas
+select * from Viajes
+select * from Movimientos
+insert into Viajes (FechaHora,IDColectivo,IDTarjeta,Importe) values (GETDATE(), 1, 1, 40)
+
+--2) Realizar un trigger que al registrar un nuevo usuario:
+--- Registre el usuario
+--- Registre una tarjeta a dicho usuario
+
+create or alter trigger tr_Insert_Usuario on Usuarios
+after insert
+as
+begin
+	begin try
+		begin transaction
+			declare @IDUsuario bigint
+			select @IDUsuario = ID from inserted
+
+			insert into Tarjetas (IDUsuario,FechaAlta,Estado,Saldo) values (@IDUsuario, GETDATE(), 1, 0)
+
+		commit transaction
+	end try
+	begin catch
+		print error_message()
+		rollback transaction
+	end catch
+end
+
+INSERT INTO Usuarios (Apellidos, Nombres, DNI, FechaNacimiento, Domicilio, Estado) VALUES
+('Pérez', 'Sofía Mariana', 98765432, '1993-07-15', 'Calle del Parque 987', 1);
+
+--3) Realizar un trigger que al registrar una nueva tarjeta:
+--- Le realice baja lógica a la última tarjeta del cliente.
+--- Le asigne a la nueva tarjeta el saldo de la última tarjeta del cliente.
+--- Registre la nueva tarjeta para el cliente (con el saldo de la vieja tarjeta, la fecha de alta de la tarjeta deberá ser la del sistema).
+
+create or alter trigger tr_Nueva_Tarjeta on Tarjetas
+instead of insert
+as
+begin
+	begin try
+		begin transaction
+			declare @SaldoAnterior money
+			declare @IDUsuario bigint
+			select @IDUsuario = IDUsuario from inserted
+			select @SaldoAnterior = saldo from tarjetas where IDUsuario = @IDUsuario and Estado = 1
+			update Tarjetas set Estado = 0 where IDUsuario = @IDUsuario
+			insert into Tarjetas(IDUsuario, FechaAlta, Estado, Saldo) select IDUsuario, FechaAlta, Estado, Saldo from inserted
+			update Tarjetas set Saldo = Saldo + @SaldoAnterior where IDUsuario = @IDUsuario and Estado = 1
+		commit transaction
+	end try
+	begin catch
+		print error_message()
+		rollback transaction
+	end catch
+end
+
+update Tarjetas set Estado = 1 where Saldo = 100
+insert into Tarjetas (IDUsuario, FechaAlta, Estado, Saldo) VALUES(4, GETDATE(), 1, 0)
+select * from Tarjetas
 
 
+--4) Realizar un trigger que al eliminar un cliente:
+--- Elimine el cliente
+--- Elimine todas las tarjetas del cliente
+--- Elimine todos los movimientos de sus tarjetas
+--- Elimine todos los viajes de sus tarjetas
+
+create or alter trigger tr_Eliminar_Cliente on Usuarios
+instead of delete
+as
+begin
+	begin try
+		begin transaction
+			declare @IDUsuario bigint
+			select @IDUsuario = ID FROM deleted
+			delete Viajes where IDTarjeta in (select ID from Tarjetas where IDUsuario = @IDUsuario)
+			delete Movimientos where IDTarjeta in (select ID from Tarjetas where IDUsuario = @IDUsuario)
+			delete Tarjetas where IDUsuario = @IDUsuario
+			delete Usuarios where ID = @IDUsuario
+		commit transaction
+	end try
+	begin catch
+		print error_message()
+		rollback transaction
+	end catch
+end
+
+delete Usuarios where ID = 2
